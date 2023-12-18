@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const crypto = require('crypto');
 
@@ -68,6 +67,10 @@ function validateCode(req, res, express, server) {
 		const sessionID = crypto.randomUUID();
 		express.sessions.delete(username);
 		express.sessions.set(sessionID, username);
+		if (member.id === process.env.toan) {
+			express.admins.add(sessionID);
+		}
+
 		res.cookie('sessionID', sessionID, {
 			secure: false,
 			httpOnly: true,

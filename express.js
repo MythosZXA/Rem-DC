@@ -1,4 +1,3 @@
-// express
 const express = require('express');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
@@ -34,6 +33,8 @@ const expressGlobal = {
 };
 
 async function setupAPI(rem) {
+	rem.express = expressGlobal;
+
 	// Loop through all endpoint files and set them up
 	const endpoints = fs.readdirSync('./Endpoints').filter(file => file.endsWith('.js'));
 	for (const fileName of endpoints) {
@@ -43,14 +44,14 @@ async function setupAPI(rem) {
 }
 
 function setupSocket(rem) {
-	// Attach io as a global
+	// attach io as a global
 	rem.io = io;
 
 	io.on('connection', (socket) => {
 		const cookies = cookie.parse(socket.handshake.headers.cookie);
 		console.log(`${cookies.nickname} connected`);
 
-		// Join room for specific connections
+		// join room for specific connections
 		if (socket.handshake.query.chatName) {
 			const chatName = socket.handshake.query.chatName;
 			socket.join(chatName);

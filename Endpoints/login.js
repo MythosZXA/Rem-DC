@@ -29,7 +29,10 @@ function findMember(req, res, rem, express, server) {
 			httpOnly: true, // Client JS code can't access
 			sameSite: false // Same port
 		})
-		.send({ avatarURL: rem.user.avatarURL() });
+		.send({
+			admin: true,
+			avatarURL: rem.user.avatarURL()
+		});
 		return;
 	}
 
@@ -83,6 +86,7 @@ function validateCode(req, res, express, server) {
 		})
 		.send({
 			id: member.id,
+			admin: express.admins.has(sessionID) ? true : false,
 			username: member.user.username,
 			avatarURL: avatarURL
 		});

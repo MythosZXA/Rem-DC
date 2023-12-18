@@ -15,7 +15,10 @@ function restoreSession(req, res, express, server) {
 }
 
 function findMember(req, res, rem, express, server) {
-	if (!req.body.input) res.sendStatus(404);
+	if (!req.body.input) {
+		res.sendStatus(404);
+		return;
+	}
 
 	const username = req.body.input.toLowerCase();
 	// Rem login
@@ -52,6 +55,7 @@ function findMember(req, res, rem, express, server) {
 function validateCode(req, res, express, server) {
 	if (!req.cookies.dcUsername && !req.cookies.input) {
 		res.sendStatus(401);
+		return;
 	}
 
 	const username = req.cookies.dcUsername.toLowerCase();

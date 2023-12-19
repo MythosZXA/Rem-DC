@@ -55,7 +55,7 @@ function findMember(req, res, rem, express, server) {
 }
 
 function validateCode(req, res, express, server) {
-	if (!req.cookies.dcUsername && !req.cookies.input) {
+	if (!req.cookies.dcUsername) {
 		res.sendStatus(401);
 		return;
 	}

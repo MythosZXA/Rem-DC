@@ -12,7 +12,7 @@ const io = new Server(httpServer, {});
 httpServer.listen(process.env.PORT);
 // app.listen(process.env.PORT);
 app.use(cors({
-	origin: 'http://localhost:5173',
+	origin: 'http://rem.mythzxa.com:5174',
 	credentials: true
 }));
 app.use(express.json());

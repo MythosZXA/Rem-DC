@@ -8,7 +8,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.token);
 (async () => {
 	try {
 		await rest.delete(
-			`${Routes.applicationGuildCommands(process.env.clientId, process.env.guildId)}/1042237829343887370`
+			`${Routes.applicationGuildCommands(process.env.clientId, process.env.guildId)}/commandID`
 		);
 
 		console.log('Successfully deleted command');

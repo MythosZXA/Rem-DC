@@ -13,9 +13,9 @@ httpServer.listen(process.env.PORT);
 // app.listen(process.env.PORT);
 const corsConfig = {
 	credentials: true,
-	headers: ['Content-Type', 'Accept', 'X-PINGOTHER'],
+	headers: ['Content-Type', 'Accept'],
   origin : ['http://rem.mythzxa.com:5174' , 'http://localhost:5174'],
-  methods:["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+  methods: ["GET", "POST"]
 };
 app.use(cors(corsConfig));
 app.options('*', cors(corsConfig));

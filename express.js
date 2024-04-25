@@ -1,14 +1,13 @@
-const express = require('express');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const cookieParser = require('cookie-parser');
 const cookie = require('cookie');
 const fs = require('fs');
 
-const app = express();
+const express = require('express');
 const cors = require('cors');
+const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, {});
 httpServer.listen(process.env.PORT);
 // app.listen(process.env.PORT);
 const corsConfig = {
@@ -17,8 +16,8 @@ const corsConfig = {
   origin : ['http://rem.mythzxa.com:5174' , 'http://localhost:5174'],
   methods: ["GET", "POST"]
 };
+const io = new Server(httpServer, { cors: corsConfig });
 app.use(cors(corsConfig));
-app.options('*', cors(corsConfig));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./src'));
@@ -46,7 +45,7 @@ function setupSocket(rem) {
 
 	io.on('connection', (socket) => {
 		const cookies = cookie.parse(socket.handshake.headers.cookie);
-		console.log(`${cookies.nickname} connected`);
+		console.log(`${cookies.dcUsername} connected`);
 
 		// join room for specific connections
 		if (socket.handshake.query.chatName) {
@@ -66,7 +65,7 @@ function setupSocket(rem) {
 		}
 
 		socket.on('disconnect', () => {
-			console.log(`${cookies.nickname} disconnected`);
+			console.log(`${cookies.dcUsername} disconnected`);
 		});
 	});
 }

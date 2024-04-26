@@ -5,15 +5,14 @@ module.exports = {
 	many: true,
 	execute(message, rem) {
 		const consoleChannel = rem.serverChannels.get('console');
-		
 		console.log(`${message.author.username}: ${message.content}`);
 		if (message.author.bot) return;		// rem sent a message, exit
-		// const chatName = message.channel?.name ?? message.author.displayAvatarURL();
-		// console.log(message.author.displayAvatarURL())
-		// rem.io.to(chatName).emit('dcMsg', {
-		// 	user: message.author,
-		// 	content: message.content
-		// });
+
+		const destinationID = message.inGuild() ? message.channel.id : message.author.id;
+		rem.io.to(destinationID).emit('dcMsg', {
+			avatarURL: message.author.displayAvatarURL(),
+			content: message.content
+		});
 
 		// dms to Rem
 		if (!message.inGuild()) {

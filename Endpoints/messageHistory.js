@@ -7,10 +7,9 @@ module.exports = {
 			const destinationID = req.body.id;
 			let channel;
 
-			const serverMember = await server.members.fetch(destinationID);
-			console.log(serverMember);
+			const guildMember = server.members.cache.find(member => member.id === destinationID);
 			// get dm channel if user is found
-			if (serverMember) { channel = await serverMember.user.createDM(); }
+			if (guildMember) { channel = await guildMember.createDM(); }
 			// get text channel if user isn't found
 			else { channel = [...rem.serverChannels.values()].find(channel => channel.id === destinationID); }
 

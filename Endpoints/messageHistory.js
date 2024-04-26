@@ -4,14 +4,15 @@ module.exports = {
 	async execute(req, res, rem, expressGlobal) {
 		if (expressGlobal.admins.has(req.cookies.sessionID) || req.body.bypassCode === process.env.admin) {
 			const server = await rem.guilds.fetch('773660297696772096');
-			const chatName = req.body.chatName;
+			const destinationID = req.body.id;
 			let channel;
 
-			const serverMember = server.members.cache.find(member => member.displayName === chatName);
+			const serverMember = await server.members.fetch(destinationID);
+			console.log(serverMember);
 			// get dm channel if user is found
 			if (serverMember) { channel = await serverMember.user.createDM(); }
 			// get text channel if user isn't found
-			else { channel = rem.serverChannels.get(chatName); }
+			else { channel = [...rem.serverChannels.values()].find(channel => channel.id === destinationID); }
 
 			// format the response depending on dm/channel
 			let messageHistory = await channel.messages.fetch({ limit: 30 });

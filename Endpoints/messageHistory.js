@@ -18,7 +18,7 @@ module.exports = {
 			messageHistory = [...messageHistory.values()];
 			res.send(messageHistory.map(message => ({
 				rem: message.author.bot,
-				avatarURL: message.author.avatarURL(),
+				avatarURL: message.author.displayAvatarURL(),
 				content: message.content
 			})));
 		} else {

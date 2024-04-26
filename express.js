@@ -45,27 +45,30 @@ function setupSocket(rem) {
 
 	io.on('connection', (socket) => {
 		const cookies = cookie.parse(socket.handshake.headers.cookie);
-		console.log(`${cookies.dcUsername} connected`);
+		const destinationID = socket.handshake.query.id;
+		
+		if (socket.handshake.query.id) {
+			// create/join a room
+			socket.join(destinationID);
+			// log
+			console.log(`${cookies.dcUsername} connected to chat ${destinationID}`);
 
-		// join room for specific connections
-		if (socket.handshake.query.chatName) {
-			const chatName = socket.handshake.query.chatName;
-			socket.join(chatName);
+			// set up up listener for messages from client
 			socket.on('remMsg', async (dm) => {
-				const destinationName = dm.chatName;
 				const server = await rem.guilds.fetch('773660297696772096');
-				const serverMember = server.members.cache.find(member => 
-					member.nickname === destinationName);
+				const serverMember = server.members.cache.find(member => member.id === destinationID);
 				if (serverMember) {
 					serverMember.send(dm.content);
 				} else {
-					rem.serverChannels.get(destinationName).send(dm.content);
+					const textChannel = [...rem.serverChannels.values()].find(channel => channel.id === destinationID);
+					textChannel.send(dm.content);
 				}
 			});
 		}
 
+		// leave/destroy room
 		socket.on('disconnect', () => {
-			console.log(`${cookies.dcUsername} disconnected`);
+			console.log(`${cookies.dcUsername} disconnected from chat ${destinationID}`);
 		});
 	});
 }

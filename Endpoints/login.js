@@ -100,7 +100,7 @@ module.exports = {
 	type: 'post',
 	async execute(req, res, rem) {
 		const express = rem.express;
-		const server = await rem.guilds.fetch('773660297696772096');
+		const server = await rem.guilds.fetch(process.env.guildId);
 		switch (req.body.reqType) {
 			case 'S': // session restore request
 				restoreSession(req, res, express, server);

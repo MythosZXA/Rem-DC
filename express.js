@@ -55,7 +55,7 @@ function setupSocket(rem) {
 
 			// set up up listener for messages from client
 			socket.on('remMsg', async (dm) => {
-				const server = await rem.guilds.fetch('773660297696772096');
+				const server = await rem.guilds.fetch(process.env.guildId);
 				const serverMember = server.members.cache.find(member => member.id === destinationID);
 				if (serverMember) {
 					serverMember.send(dm.content);

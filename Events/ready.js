@@ -5,7 +5,7 @@ module.exports = {
 	once: true,
 	async execute(rem) {
 		// set up global variables
-		const server = await rem.guilds.fetch('773660297696772096');
+		const server = await rem.guilds.fetch(process.env.guildId);
 		rem.remDB = await require('../sequelize').importDBToMemory();
 		rem.serverChannels = await require('../channels').getServerChannels(server);
 

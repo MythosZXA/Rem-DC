@@ -3,7 +3,7 @@ module.exports = {
 	type: 'post',
 	async execute(req, res, rem, expressGlobal) {
 		if (expressGlobal.admins.has(req.cookies.sessionID) || req.body.bypassCode === process.env.admin) {
-			const server = await rem.guilds.fetch('773660297696772096');
+			const server = await rem.guilds.fetch(process.env.guildId);
 			const destinationID = req.body.id;
 			let channel;
 

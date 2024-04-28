@@ -25,7 +25,7 @@ module.exports = {
 		.write(`data: ${JSON.stringify(lobby.map(obj => obj.player))}\n\n`);
 
 		// join lobby
-		const server = await rem.guilds.fetch('773660297696772096');
+		const server = await rem.guilds.fetch(process.env.guildId);
 		const member = server.members.cache.find(member => member.user.username === req.cookies.dcUsername);
 		lobby.push({
 			id: req.cookies.sessionID,

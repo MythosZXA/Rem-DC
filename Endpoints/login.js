@@ -1,6 +1,12 @@
 require('dotenv').config();
 const crypto = require('crypto');
 
+const cookieConfig = {
+	secure: true,
+	httpOnly: true,
+	sameSite: 'none'
+};
+
 function restoreSession(req, res, express, server) {
 	const sessionID = req.cookies.sessionID;
 	const nickname = express.sessions.get(sessionID);
@@ -24,11 +30,7 @@ function findMember(req, res, rem, express, server) {
 	if (username === process.env.admin) {
 		const sessionID = crypto.randomUUID();
 		express.admins.add(sessionID);
-		res.cookie('sessionID', sessionID, {
-			secure: false, // Http(s)
-			httpOnly: true, // Client JS code can't access
-			sameSite: false // Same port
-		})
+		res.cookie('sessionID', sessionID, cookieConfig)
 		.send({
 			admin: true,
 			avatarURL: rem.user.avatarURL()
@@ -42,11 +44,7 @@ function findMember(req, res, rem, express, server) {
 		const randomPin = Math.floor(Math.random() * (1000000 - 100000) + 100000).toString();
 		express.sessions.set(username, randomPin);
 		member.send(randomPin);
-		res.cookie('dcUsername', username, {
-			secure: false,
-			httpOnly: true,
-			sameSite: false
-		})
+		res.cookie('dcUsername', username, cookieConfig)
 		.status(202)
 		.send({});
 	} else {
@@ -74,16 +72,8 @@ function validateCode(req, res, express, server) {
 			express.admins.add(sessionID);
 		}
 
-		res.cookie('sessionID', sessionID, {
-			secure: false,
-			httpOnly: true,
-			sameSite: false
-		})
-		.cookie('discordID', member.id, {
-			secure: false,
-			httpOnly: true,
-			sameSite: false
-		})
+		res.cookie('sessionID', sessionID, cookieConfig)
+		.cookie('discordID', member.id, cookieConfig)
 		.send({
 			id: member.id,
 			admin: express.admins.has(sessionID) ? true : false,

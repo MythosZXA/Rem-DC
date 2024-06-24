@@ -13,7 +13,7 @@ httpServer.listen(process.env.PORT);
 const corsConfig = {
 	credentials: true,
 	headers: ['Content-Type', 'Accept'],
-  origin : ['http://rem.mythzxa.com:5174' , 'http://localhost:5174'],
+  origin : ['https://rem.mythzxa.com' , 'http://localhost:5174'],
   methods: ["GET", "POST"]
 };
 const io = new Server(httpServer, { cors: corsConfig });

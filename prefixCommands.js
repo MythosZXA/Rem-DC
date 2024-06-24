@@ -28,7 +28,6 @@ async function message(message, arg) {
 }
 
 async function sleep(message) {
-	await require('./sequelize').exportMemoryToDB(message.client);
 	process.kill(process.pid, 'SIGTERM');
 }
 

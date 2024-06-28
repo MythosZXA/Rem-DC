@@ -2,7 +2,7 @@ module.exports = {
 	name: 'interactionCreate',
 	many: true,
 	async execute(interaction, rem) {
-		if (interaction.isApplicationCommand()) {		// slash commands
+		if (interaction.isCommand()) {		// slash commands
 			const consoleChannel = rem.serverChannels.get('console');
 			consoleChannel.send(`${interaction.user.tag} used: ${interaction.commandName} (${interaction.commandId})`);
 

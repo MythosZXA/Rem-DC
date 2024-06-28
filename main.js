@@ -9,7 +9,7 @@ const { INET } = require('sequelize');
 const rem = require('./discord').setupRem();
 // set commands
 const fs = require('fs');
-const { default: Collection } = require('@discordjs/collection');
+const { Collection } = require('@discordjs/collection');
 rem.commands = new Collection();
 const commandFiles = fs.readdirSync('./Commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {

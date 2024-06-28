@@ -1,20 +1,19 @@
-const { Client } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 
 function setupRem() {
-	return new Client({
-		intents: [
-			'GUILDS',
-			'GUILD_MEMBERS',
-			'GUILD_EMOJIS_AND_STICKERS',
-			'GUILD_VOICE_STATES',
-			'GUILD_PRESENCES',
-			'GUILD_MESSAGES',
-			'DIRECT_MESSAGES',
-		],
-		partials: ['CHANNEL']
-	});
+  return new Client({
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildEmojisAndStickers,
+      GatewayIntentBits.GuildPresences,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.DirectMessages,
+    ],
+    partials: ['CHANNEL']
+  });
 }
 
 module.exports = {
-	setupRem
+  setupRem
 };

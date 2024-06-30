@@ -1,9 +1,12 @@
-let lobby = [];
+const lobby = new Set(); // holds objects representing guests in the cards lobby
 
+/**
+ * Send guest information to all guests in the lobby
+ */
 function sendLobby() {
-	lobby.forEach(obj1 => {
-		const filteredLobby = lobby.filter(obj2 => obj2.id !== obj1.id); // exclude "self"
-		obj1.res.write(`data: ${JSON.stringify(filteredLobby.map(obj2 => obj2.player))}\n\n`);
+	lobby.forEach(curGuest => {
+		const filteredLobby = [...lobby.values()].filter(otherGuest => otherGuest.id !== curGuest.id); // exclude "self"
+		curGuest.res.write(`data: ${JSON.stringify(filteredLobby.map(otherGuest => otherGuest.participant))}\n\n`);
 	});
 }
 
@@ -16,33 +19,34 @@ module.exports = {
 			return;
 		}
 
-		// send current lobby to player who just joined the lobby
+		// send current lobby to guest who just joined the lobby
 		res.writeHead(200, {
 			'Content-Type': 'text/event-stream',
 			'Connection': 'keep-alive',
 			'Cache-Control': 'no-cache'
 		})
-		.write(`data: ${JSON.stringify(lobby.map(obj => obj.player))}\n\n`);
+		.write(`data: ${JSON.stringify([...lobby.values()].map(obj => obj.participant))}\n\n`);
 
 		// join lobby
 		const server = await rem.guilds.fetch(process.env.guildId);
 		const member = server.members.cache.find(member => member.user.username === req.cookies.dcUsername);
-		lobby.push({
+		const guestObj = {
 			id: req.cookies.sessionID,
-			player: {
+			participant: {
 				avatarURL: member.displayAvatarURL(),
 				username: req.cookies.dcUsername
 			},
 			res
-		});
+		};
+		lobby.add(guestObj);
 		console.log(`${req.cookies.dcUsername} has joined the cards lobby`);
 
-		// send updated lobby to players in lobby
+		// send updated lobby to guest in lobby
 		sendLobby();
 
 		// leave lobby
 		req.on('close', () => {
-			lobby = lobby.filter(player => player.id !== req.cookies.sessionID);
+			lobby.delete(guestObj);
 			sendLobby();
 			console.log(`${req.cookies.dcUsername} has left the cards lobby`);
 		});

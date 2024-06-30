@@ -1,4 +1,4 @@
-const { table, hands } = require('./cards_start');
+const { table, hands } = require('./start');
 
 const people = new Map();
 

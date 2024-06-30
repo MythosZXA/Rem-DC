@@ -1,5 +1,5 @@
-const { table, hands } = require('./cards_start');
-const { sendTable } = require('./cards_table');
+const { table, hands } = require('./start');
+const { sendTable } = require('./table');
 
 module.exports = {
 	name: '/cards/play',

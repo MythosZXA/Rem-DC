@@ -1,6 +1,6 @@
-const { resetLobby } = require('./cards_lobby');
-const { setInactiveGame } = require('./cards_table');
-const { clearGame } = require('./cards_start');
+const { resetLobby } = require('./lobby');
+const { setInactiveGame } = require('./table');
+const { clearGame } = require('./start');
 
 module.exports = {
 	name: '/cards/stop',

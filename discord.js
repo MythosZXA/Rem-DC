@@ -8,6 +8,7 @@ function setupRem() {
       GatewayIntentBits.GuildEmojisAndStickers,
       GatewayIntentBits.GuildPresences,
       GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.MessageContent,
       GatewayIntentBits.DirectMessages,
     ],
     partials: ['CHANNEL']

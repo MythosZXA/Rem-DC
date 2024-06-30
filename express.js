@@ -32,8 +32,8 @@ async function setupAPI(rem) {
 	rem.express = expressGlobal;
 
 	// Loop through all endpoint files and set them up
-	const endpoints = fs.readdirSync('./Endpoints').filter(file => file.endsWith('.js'));
-	for (const fileName of endpoints) {
+	const epFiles = fs.readdirSync('./Endpoints', { recursive: true }).filter(file => file.endsWith('.js'));
+	for (const fileName of epFiles) {
 		const endpoint = require(`./Endpoints/${fileName}`);
 		app[endpoint.type](endpoint.name, (req, res) => endpoint.execute(req, res, rem, expressGlobal));
 	}

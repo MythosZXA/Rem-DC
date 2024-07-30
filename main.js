@@ -28,7 +28,13 @@ for (const fileName of eventFiles) {
 			await event.execute(...args);
 		});
 	} else if (event.many) {		// other discord events
-		rem.on(event.name, (...args) => event.execute(...args, rem));
+		rem.on(event.name, (...args) => {
+      try {
+        event.execute(...args, rem);
+      } catch (e) {
+        console.log(e);
+      }
+    });
 	} else {		// node process events
 		process.on(event.name, (...args) => event.execute(rem, ...args));
 	}

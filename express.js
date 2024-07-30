@@ -28,6 +28,8 @@ const expressGlobal = {
 	admins: new Set()
 };
 
+const wrapRoll = Array(10).fill().map(() => Array(10).fill(false));
+
 async function setupAPI(rem) {
 	rem.express = expressGlobal;
 
@@ -51,7 +53,7 @@ function setupSocket(rem) {
 			// create/join a room
 			socket.join(destinationID);
 			// log
-			console.log(`${cookies.dcUsername} connected to chat ${destinationID}`);
+			console.log(`${cookies.dcUsername} connected to room ${destinationID}`);
 
 			// set up up listener for messages from client
 			socket.on('remMsg', async (dm) => {
@@ -64,11 +66,21 @@ function setupSocket(rem) {
 					textChannel.send(dm.content);
 				}
 			});
+
+      if (socket.handshake.query.id === 'BubbleWrap') {
+        io.to('BubbleWrap').emit('newState', wrapRoll);
+      }
+
+      // listener for bubble pops
+      socket.on('pop', (objIndices) => {
+        wrapRoll[objIndices.y][objIndices.x] = !wrapRoll[objIndices.y][objIndices.x];
+        io.to('BubbleWrap').emit('newState', wrapRoll);
+      });
 		}
 
 		// leave/destroy room
 		socket.on('disconnect', () => {
-			console.log(`${cookies.dcUsername} disconnected from chat ${destinationID}`);
+			console.log(`${cookies.dcUsername} disconnected from room ${destinationID}`);
 		});
 	});
 }

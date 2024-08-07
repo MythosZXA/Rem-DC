@@ -7,46 +7,78 @@ const cookieConfig = {
   sameSite: 'none'
 };
 
-function restoreSession(req, res, express) {
-  // if session ID isn't provided, return
-  const sessionID = req.cookies.rdcSID;
-  if (!sessionID) {
-    res.status(400).send('No session cookie provided');
-    return;
-  }
-  // if session ID doesn't exist, return
-  const dcUserInfo = express.sessions.get(sessionID)
-  if (!dcUserInfo) {
-    res.status(400).send('Session not found');
+async function createSession(req, res, express) {
+  // if token isn't provided, return
+  const tokenInfo = req.body.tokenInfo;
+  if (!tokenInfo?.[0]) {
+    res.status(400).send('No access token provided');
     return;
   }
 
-  res.send({
-    token: dcUserInfo.accessToken,
-    tokenType: dcUserInfo.tokenType
+  // request user information from discord
+  const resDC = await fetch('https://discord.com/api/users/@me', {
+    headers: {
+      authorization: `${tokenInfo[1]} ${tokenInfo[0]}`
+    }
   });
-}
 
-function createSession(req, res, express) {
-  const user = req.body.user;
-  if (!user?.accessToken) {
-    res.status(400).send('No access token cookie provided');
+  // if no information was provided, return
+  if (!resDC.ok) {
+    res.status(401).send('Token is expired or invalid');
     return;
   }
 
+  // create session
+  const userSess = await resDC.json();
   const sessionID = crypto.randomUUID();
   res.cookie('rdcSID', sessionID, cookieConfig);
-  express.sessions.set(sessionID, user);
+  express.sessions.set(sessionID, userSess);
 
   // determine if user is an admin
   const adminUIDs = process.env.admins.split(',');
-  if (adminUIDs.includes(user.id)) {
+  if (adminUIDs.includes(userSess.id)) {
     express.admins.add(sessionID);
-    res.send({ admin: true });
-  } else {
-    res.send({});
+    userSess.admin = true;
   }
+
+  // send user information to client
+  res.send({ userSess });
 }
+
+function restoreSession(req, res, express) {
+  const SID = extractSID(req, res);
+  if (!SID) return;
+  
+  const userSess = getUserSess(SID, res, express);
+  if (!userSess) return;
+
+  // send active session (user information)
+  res.send({ userSess });
+}
+
+//** HELPER FUNCTIONS */
+
+function extractSID(req, res) {
+  const SID = req.cookies.rdcSID;
+  if (!SID) {
+    res.status(400).send('No session cookie provided');
+    return null;
+  } 
+
+  return SID;
+}
+
+function getUserSess(SID, res, express) {
+  const userSess = express.sessions.get(SID);
+  if (!userSess) {
+    res.status(404).send('Session not found');
+    return null;
+  }
+
+  return userSess;
+}
+
+//** END HELPER FUNCTIONS */
 
 module.exports = {
   name: '/login',
@@ -54,11 +86,12 @@ module.exports = {
   async execute(req, res, rem) {
     const express = rem.express;
     switch (req.body.reqType) {
+      case 'L': // session create request
+        createSession(req, res, express);
+        break;
       case 'R': // session restore request
         restoreSession(req, res, express);
         break;
-      case 'L': // session create request
-        createSession(req, res, express);
       default:
         break;
     }

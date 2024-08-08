@@ -5,5 +5,6 @@ module.exports = {
   execute(objIndices, rem) {
     wrapRoll[objIndices.y][objIndices.x] = !wrapRoll[objIndices.y][objIndices.x];
     rem.io.to('BubbleWrap').emit('newState', wrapRoll);
-  }
+  },
+  wrapRoll
 }

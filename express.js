@@ -28,8 +28,6 @@ const expressGlobal = {
   admins: new Set()
 };
 
-const wrapRoll = Array(10).fill().map(() => Array(10).fill(false));
-
 async function setupAPI(rem) {
   rem.express = expressGlobal;
 
@@ -68,6 +66,7 @@ function setupSocket(rem) {
     // logic for connections that need initialization
     switch (destinationID) {
       case 'BubbleWrap':
+        const wrapRoll = require('./SocketEvents/pop').wrapRoll;
         io.to('BubbleWrap').emit('newState', wrapRoll);
         break;
       default:

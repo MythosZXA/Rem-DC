@@ -2,6 +2,10 @@ const epFuncs = require ('../common');
 
 const lobby = new Map(); // holds objects representing guests in the cards lobby
 
+setInterval(() => {
+  sendLobby();
+}, 1000 * 60);
+
 /**
  * Send guest information to all guests in the lobby
  */

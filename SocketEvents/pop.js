@@ -1,4 +1,4 @@
-const wrapRoll = Array(10).fill().map(() => Array(10).fill(false));
+const wrapRoll = Array(20).fill().map(() => Array(20).fill(false));
 
 module.exports = {
   event: 'pop',

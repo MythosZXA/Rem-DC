@@ -1,14 +1,15 @@
-module.exports = {
-	name: '/logout',
-	type: 'post',
-	execute(req, res, _, expressGlobal) {
-		if (!req.cookies.rdcSID) {
-			res.status(404).send('Session not found');
-			return;
-		}
+const epFuncs = require('./common');
 
-		expressGlobal.sessions.delete(req.cookies.rdcSID);
-		expressGlobal.admins.delete(req.cookies.rdcSID);
-		res.send({});
-	}
+module.exports = {
+  name: '/logout',
+  type: 'post',
+  execute(req, res, rem) {
+    const SID = epFuncs.extractSID(req, res);
+    if (!SID) return;
+
+    const express = rem.express;
+    express.sessions.delete(req.cookies.rdcSID);
+    express.admins.delete(req.cookies.rdcSID);
+    res.send({});
+  }
 };

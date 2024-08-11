@@ -31,13 +31,17 @@ const expressGlobal = {
 async function setupAPI(rem) {
   rem.express = expressGlobal;
 
-  // loop through all endpoint files and set them up
+  // loop through all endpoint files
   const epFiles = fs.readdirSync('./Endpoints', { recursive: true }).filter(file => file.endsWith('.js'));
   for (const fileName of epFiles) {
+    // skip common.js
+    if (fileName === 'common.js') continue;
+
+    // set endpoint to run module's execute function
     const endpoint = require(`./Endpoints/${fileName}`);
     app[endpoint.type](endpoint.name, (req, res) => {
       try {
-        endpoint.execute(req, res, rem, expressGlobal);
+        endpoint.execute(req, res, rem);
       } catch (e) {
         console.log(e);
       }

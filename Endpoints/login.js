@@ -1,4 +1,4 @@
-require('dotenv').config();
+const epFuncs = require('./common');
 const crypto = require('crypto');
 
 const cookieConfig = {
@@ -47,39 +47,15 @@ async function createSession(req, res, express) {
 }
 
 function restoreSession(req, res, express) {
-  const SID = extractSID(req, res);
+  const SID = epFuncs.extractSID(req, res);
   if (!SID) return;
   
-  const userSess = getUserSess(SID, res, express);
-  if (!userSess) return;
+  const sessUser = epFuncs.getSessUser(SID, res, express);
+  if (!sessUser) return;
 
   // send active session (user information)
-  res.send({ userSess });
+  res.send({ sessUser });
 }
-
-//** HELPER FUNCTIONS */
-
-function extractSID(req, res) {
-  const SID = req.cookies.rdcSID;
-  if (!SID) {
-    res.status(400).send('No session cookie provided');
-    return null;
-  } 
-
-  return SID;
-}
-
-function getUserSess(SID, res, express) {
-  const userSess = express.sessions.get(SID);
-  if (!userSess) {
-    res.status(404).send('Session not found');
-    return null;
-  }
-
-  return userSess;
-}
-
-//** END HELPER FUNCTIONS */
 
 module.exports = {
   name: '/login',

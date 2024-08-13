@@ -1,10 +1,10 @@
-const epFuncs = require('./common');
+import { extractSID } from './common.js';
 
-module.exports = {
+export default {
   name: '/serverMembers',
   type: 'get',
   async execute(req, res, rem) {
-    const SID = epFuncs.extractSID(req, res);
+    const SID = extractSID(req, res);
     if (!SID) return;
     
     const server = await rem.guilds.fetch(process.env.guildId);

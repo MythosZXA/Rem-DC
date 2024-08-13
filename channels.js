@@ -4,16 +4,16 @@
  * @returns a Map of channel names and channel objects
  */
 async function getServerChannels(server) {
-	const channels = new Map();
-	const serverChannels = await server.channels.fetch();
-	serverChannels.forEach(channel => {
-		const channelName = channel.name;
-		channels.set(channelName, channel);
-	});
+  const channels = new Map();
+  const serverChannels = await server.channels.fetch();
+  serverChannels.forEach(channel => {
+    const channelName = channel.name;
+    channels.set(channelName, channel);
+  });
 
-	return channels;
+  return channels;
 }
 
-module.exports = {
-	getServerChannels
+export {
+  getServerChannels
 };

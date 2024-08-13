@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: '/palia',
   type: 'get',
   execute(req, res, rem) {

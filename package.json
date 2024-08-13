@@ -1,6 +1,7 @@
 {
   "name": "rem-bot",
   "version": "1.0.0",
+  "type": "module",
   "engines": {
     "node": "16.x"
   },

@@ -1,6 +1,6 @@
 /* Helper functions. NOT an endpoint file */
 
-function extractSID(req, res) {
+export function extractSID(req, res) {
   const SID = req.cookies.rdcSID;
   if (!SID) {
     res.status(400).send('No session cookie provided');
@@ -10,7 +10,7 @@ function extractSID(req, res) {
   return SID;
 }
 
-function getSessUser(SID, res, express) {
+export function getSessUser(SID, res, express) {
   const sessUser = express.sessions.get(SID);
   if (!sessUser) {
     res.status(404).send('Session not found');
@@ -19,8 +19,3 @@ function getSessUser(SID, res, express) {
 
   return sessUser;
 }
-
-module.exports = {
-  extractSID,
-  getSessUser
-};

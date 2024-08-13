@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   event: 'remDM',
   async execute(dm, rem, destinationID) {
     const server = await rem.guilds.fetch(process.env.guildId);

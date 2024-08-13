@@ -1,11 +1,11 @@
-const { createServer } = require('http');
-const { Server } = require('socket.io');
-const cookieParser = require('cookie-parser');
-const cookie = require('cookie');
-const fs = require('fs');
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import cookieParser from 'cookie-parser';
+import cookie from 'cookie';
+import fs from 'fs';
 
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
 const app = express();
 const httpServer = createServer(app);
 httpServer.listen(process.env.PORT);
@@ -28,7 +28,7 @@ const expressGlobal = {
   admins: new Set()
 };
 
-async function setupAPI(rem) {
+export async function setupAPI(rem) {
   rem.express = expressGlobal;
 
   // loop through all endpoint files
@@ -38,7 +38,7 @@ async function setupAPI(rem) {
     if (fileName === 'common.js') continue;
 
     // set endpoint to run module's execute function
-    const endpoint = require(`./Endpoints/${fileName}`);
+    const endpoint = (await import(`./Endpoints/${fileName}`)).default;
     app[endpoint.type](endpoint.name, (req, res) => {
       try {
         endpoint.execute(req, res, rem);
@@ -49,10 +49,10 @@ async function setupAPI(rem) {
   }
 }
 
-function setupSocket(rem) {
+export function setupSocket(rem) {
   rem.io = io;
 
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
     // validation
     const destinationID = socket.handshake.query.id;
     const cookies = cookie.parse(socket.handshake.headers.cookie || '');
@@ -70,7 +70,7 @@ function setupSocket(rem) {
     // logic for connections that need initialization
     switch (destinationID) {
       case 'BubbleWrap':
-        const wrapRoll = require('./SocketEvents/pop').wrapRoll;
+        const wrapRoll = (await import('./SocketEvents/pop.js')).default.wrapRoll;
         io.to('BubbleWrap').emit('newState', wrapRoll);
         break;
       default:
@@ -80,7 +80,7 @@ function setupSocket(rem) {
     // loop through all socket files and set up event listeners
     const eventFiles = fs.readdirSync('./SocketEvents', { recursive: true }).filter(file => file.endsWith('.js'));
     for (const fileName of eventFiles) {
-      const event = require(`./SocketEvents/${fileName}`);
+      const event = (await import(`./SocketEvents/${fileName}`)).default;
       socket.on(event.event, (arg) => {
         try {
           event.execute(arg, rem, destinationID, username);
@@ -91,8 +91,3 @@ function setupSocket(rem) {
     }
   });
 }
-
-module.exports = {
-  setupAPI,
-  setupSocket
-};

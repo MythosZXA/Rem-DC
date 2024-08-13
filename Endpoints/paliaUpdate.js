@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: '/paliaUpdate',
   type: 'post',
   execute(req, res, rem) {

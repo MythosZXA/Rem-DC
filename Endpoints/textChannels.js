@@ -1,11 +1,11 @@
-const epFuncs = require('./common');
-const { ChannelType } = require("discord.js");
+import { extractSID } from './common.js';
+import { ChannelType } from "discord.js";
 
-module.exports = {
+export default {
   name: '/textChannels',
   type: 'get',
   async execute(req, res, rem) {
-    const SID = epFuncs.extractSID(req, res);
+    const SID = extractSID(req, res);
     if (!SID) return;
     
     const server = await rem.guilds.fetch(process.env.guildId);

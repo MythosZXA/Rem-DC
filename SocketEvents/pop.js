@@ -1,6 +1,6 @@
 const wrapRoll = Array(20).fill().map(() => Array(20).fill(false));
 
-module.exports = {
+export default {
   event: 'pop',
   execute(objIndices, rem) {
     wrapRoll[objIndices.y][objIndices.x] = !wrapRoll[objIndices.y][objIndices.x];

@@ -1,4 +1,4 @@
-const epFuncs = require ('../common');
+import { extractSID, getSessUser } from '../common.js';
 
 const lobby = new Map(); // holds objects representing guests in the cards lobby
 
@@ -18,14 +18,14 @@ function sendLobby() {
   });
 }
 
-module.exports = {
+export default {
   name: '/cards/lobby',
   type: 'get',
   async execute(req, res, rem) {
-    const SID = epFuncs.extractSID(req, res);
+    const SID = extractSID(req, res);
     if (!SID) return;
 
-    const sessUser = epFuncs.getSessUser(SID, res, rem.express);
+    const sessUser = getSessUser(SID, res, rem.express);
     if (!sessUser) return;
 
     // join lobby

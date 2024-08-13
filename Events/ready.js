@@ -1,28 +1,33 @@
-const specialDaysFunctions = require('../Functions/specialDaysFunctions');
+import { Events } from 'discord.js';
+// import paliaFunctions from '../Functions/palia.js';
+import { importDBToMemory } from '../sequelize.js';
+import { getServerChannels } from '../channels.js';
+import { checkBirthday } from '../Functions/specialDaysFunctions.js';
+import { setupAPI, setupSocket } from '../express.js';
 
-module.exports = {
-	name: 'ready',
-	once: true,
-	async execute(rem) {
-		// set up global variables
-		const server = await rem.guilds.fetch(process.env.guildId);
-		rem.remDB = await require('../sequelize').importDBToMemory();
-		rem.serverChannels = await require('../channels').getServerChannels(server);
+export default {
+  name: Events.ClientReady,
+  once: true,
+  async execute(rem) {
+    // set up global variables
+    const server = await rem.guilds.fetch(process.env.guildId);
+    rem.remDB = await importDBToMemory();
+    rem.serverChannels = await getServerChannels(server);
 
-		// caches users for easier access
-		server.members.fetch();
-		
-		// check for special days when tomorrow comes
-		// specialDaysFunctions.checkHoliday(channels);
-		specialDaysFunctions.checkBirthday(server, rem);
+    // caches users for easier access
+    server.members.fetch();
+    
+    // check for special days when tomorrow comes
+    // specialDaysFunctions.checkHoliday(channels);
+    checkBirthday(server, rem);
 
-		// palia
-		require('../Functions/palia').setupResetTimer(rem);
+    // palia
+    // paliaFunctions.setupResetTimer(rem);
 
-		// server
-		require('../express').setupAPI(rem);
-		require('../express').setupSocket(rem);
+    // server
+    setupAPI(rem);
+    setupSocket(rem);
 
-		console.log('Rem is online.');
-	}
+    console.log('Rem is awake!');
+  }
 };

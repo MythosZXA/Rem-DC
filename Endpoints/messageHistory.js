@@ -1,10 +1,10 @@
-const epFuncs = require('./common');
+import { extractSID } from './common.js';
 
-module.exports = {
+export default {
   name: '/messageHistory',
   type: 'post',
   async execute(req, res, rem) {
-    const SID = epFuncs.extractSID(req, res);
+    const SID = extractSID(req, res);
     if (!SID) return;
 
     const destinationID = req.body.id;

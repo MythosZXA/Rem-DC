@@ -1,5 +1,5 @@
-const epFuncs = require('./common');
-const crypto = require('crypto');
+import { extractSID, getSessUser } from './common.js';
+import crypto from 'crypto';
 
 const cookieConfig = {
   maxAge: 1000 * 60 * 60 * 24,
@@ -47,17 +47,17 @@ async function createSession(req, res, express) {
 }
 
 function restoreSession(req, res, express) {
-  const SID = epFuncs.extractSID(req, res);
+  const SID = extractSID(req, res);
   if (!SID) return;
   
-  const sessUser = epFuncs.getSessUser(SID, res, express);
+  const sessUser = getSessUser(SID, res, express);
   if (!sessUser) return;
 
   // send active session (user information)
   res.send({ sessUser });
 }
 
-module.exports = {
+export default {
   name: '/login',
   type: 'post',
   async execute(req, res, rem) {

@@ -1,22 +1,5 @@
 import { extractSID, getSessUser } from '../common.js';
-
-const lobby = new Map(); // holds objects representing guests in the cards lobby
-
-setInterval(() => {
-  sendLobby();
-}, 1000 * 60);
-
-/**
- * Send guest information to all guests in the lobby
- */
-function sendLobby() {
-  lobby.forEach(curGuest => {
-    const arrParticipants = Array.from(lobby.values())
-      .map(guest => guest.participant) // exclude res
-
-    curGuest.res.write(`data: ${JSON.stringify(arrParticipants)}\n\n`);
-  });
-}
+import { lobby, hands, sendLobby, sendTable } from './common.js';
 
 export default {
   name: '/cards/lobby',
@@ -48,8 +31,8 @@ export default {
       'Cache-Control': 'no-cache'
     });
 
-    // send updated lobby to guest in lobby
-    sendLobby();
+    // send table if active game, otherwise lobby
+    hands.size ? sendTable() : sendLobby();
 
     // leave lobby
     req.on('close', () => {

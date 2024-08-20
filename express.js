@@ -80,9 +80,9 @@ export function setupSocket(rem) {
     const eventFiles = fs.readdirSync('./SocketEvents', { recursive: true }).filter(file => file.endsWith('.js'));
     for (const fileName of eventFiles) {
       const event = (await import(`./SocketEvents/${fileName}`)).default;
-      socket.on(event.event, (arg) => {
+      socket.on(event?.event, (arg) => {
         try {
-          event.execute(arg, rem, destinationID, username);
+          event.execute(arg, socket, rem);
         } catch (e) {
           console.error(e);
         }

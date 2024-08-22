@@ -73,7 +73,11 @@ export function setupSocket(rem) {
       io.to(destinationID).emit('newState', wrapRoll);
     } else if (destinationID.startsWith('HandCard')) {
       const hand = (await import('./Endpoints/cards/common.js')).hands.get(cookies.rdcSID);
-      io.to(destinationID).emit('hand', hand);
+      if (hand) {
+        io.to(destinationID).emit('hand', hand);
+      } else {
+        io.in(destinationID).disconnectSockets();
+      }
     }
 
     // loop through all socket files and set up event listeners

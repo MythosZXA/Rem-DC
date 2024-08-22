@@ -1,10 +1,12 @@
 export const lobby = new Map(); // holds objects representing guests in the cards lobby
+export const tableSpectators = new Map();
 export const table = [];
 export let deck = [];
 export const hands = new Map();
 
 setInterval(() => {
-  hands.size ? sendTable() : sendLobby();
+  sendLobby();
+  sendTable();
 }, 1000 * 60);
 
 export function sendLobby() {
@@ -12,13 +14,13 @@ export function sendLobby() {
     const arrParticipants = Array.from(lobby.values())
       .map(guest => guest.participant) // exclude res
 
-    curGuest.res.write(`data: ${JSON.stringify(arrParticipants)}\n\n`);
+    curGuest.res.write(`data: ${hands.size ? '{}' : JSON.stringify(arrParticipants)}\n\n`);
   });
 }
 
 export function sendTable() {
-  lobby.forEach(curGuest => {
-    curGuest.res.write(`data: ${JSON.stringify(table)}\n\n`);
+  tableSpectators.forEach(resSpectator => {
+    resSpectator.write(`data: ${JSON.stringify(table)}\n\n`);
   });
 }
 

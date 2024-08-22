@@ -5,14 +5,14 @@ export default {
   name: '/cards/reset',
   type: 'post',
   execute(req, res, rem) {
-    const SID = extractSID(req, res);
-    if (!SID) return;
+    // const SID = extractSID(req, res);
+    // if (!SID) return;
 
-    if(!hands.get(SID)) return;
+    // if(!hands.get(SID)) return;
 
     table.length = 0;
     hands.clear();
 
-    res.sendStatus(200);
+    res.send({});
   }
 }

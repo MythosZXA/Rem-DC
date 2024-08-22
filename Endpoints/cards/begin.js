@@ -1,5 +1,5 @@
 import { extractSID } from '../common.js';
-import { lobby, deck, hands, sendTable, resetDeck, shuffleDeck } from './common.js';
+import { lobby, deck, hands, sendLobby, resetDeck, shuffleDeck } from './common.js';
 
 export default {
   name: '/cards/begin',
@@ -27,7 +27,7 @@ export default {
       hands.set(pSID, hand);
     });
 
-    sendTable();
+    sendLobby();
     res.send({});
   }
 }

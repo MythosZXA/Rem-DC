@@ -31,8 +31,7 @@ export default {
       'Cache-Control': 'no-cache'
     });
 
-    // send table if active game, otherwise lobby
-    hands.size ? sendTable() : sendLobby();
+    sendLobby();
 
     // leave lobby
     req.on('close', () => {

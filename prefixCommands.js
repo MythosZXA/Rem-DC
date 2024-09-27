@@ -1,3 +1,5 @@
+import { table, hands, sendTable } from './Endpoints/cards/common.js'
+
 function code(message, arg) {
   if (message.member.id !== process.env.toan) return;
   
@@ -47,10 +49,17 @@ async function wakeraf(message) {
   }, 1000);
 }
 
+function reset() {
+  table.length = 0;
+  hands.clear();
+  sendTable();
+}
+
 export {
   code,
   message,
   sleep,
   test,
   wakeraf,
+  reset
 };

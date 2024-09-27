@@ -1,5 +1,5 @@
 import { extractSID } from '../common.js';
-import { table, hands } from './common.js';
+import { table, hands, sendTable } from './common.js';
 
 export default {
   name: '/cards/reset',
@@ -13,6 +13,7 @@ export default {
     table.length = 0;
     hands.clear();
 
+    sendTable();
     res.send({});
   }
 }

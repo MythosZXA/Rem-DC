@@ -14,13 +14,13 @@ export function sendLobby() {
     const arrParticipants = Array.from(lobby.values())
       .map(guest => guest.participant) // exclude res
 
-    curGuest.res.write(`data: ${hands.size ? { Status: "Active" } : JSON.stringify(arrParticipants)}\n\n`);
+    curGuest.res.write(`data: ${hands.size ? '"Active"' : JSON.stringify(arrParticipants)}\n\n`);
   });
 }
 
 export function sendTable() {
   tableSpectators.forEach(resSpectator => {
-    resSpectator.write(`data: ${hands.size ? JSON.stringify(table) : { Status: "Waiting" }}\n\n`);
+    resSpectator.write(`data: ${hands.size ? JSON.stringify(table) : '"Waiting"'}\n\n`);
   });
 }
 

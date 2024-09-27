@@ -35,7 +35,7 @@ export async function setupAPI(rem) {
   const epFiles = fs.readdirSync('./Endpoints', { recursive: true }).filter(file => file.endsWith('.js'));
   for (const fileName of epFiles) {
     // skip common.js
-    if (fileName === 'common.js') continue;
+    if (fileName.endsWith('common.js')) continue;
 
     // set endpoint to run module's execute function
     const endpoint = (await import(`./Endpoints/${fileName}`)).default;
@@ -68,22 +68,25 @@ export function setupSocket(rem) {
     console.log(`${username} connected to room ${destinationID}`);
 
     // logic for connections that need initialization
-    switch (destinationID) {
-      case 'BubbleWrap':
-        const wrapRoll = (await import('./SocketEvents/pop.js')).default.wrapRoll;
-        io.to('BubbleWrap').emit('newState', wrapRoll);
-        break;
-      default:
-        break;
+    if (destinationID === 'BubbleWrap') {
+      const wrapRoll = (await import('./SocketEvents/pop.js')).default.wrapRoll;
+      io.to(destinationID).emit('newState', wrapRoll);
+    } else if (destinationID.startsWith('HandCard')) {
+      const hand = (await import('./Endpoints/cards/common.js')).hands.get(cookies.rdcSID);
+      if (hand) {
+        io.to(destinationID).emit('hand', hand);
+      } else {
+        io.in(destinationID).disconnectSockets();
+      }
     }
 
     // loop through all socket files and set up event listeners
     const eventFiles = fs.readdirSync('./SocketEvents', { recursive: true }).filter(file => file.endsWith('.js'));
     for (const fileName of eventFiles) {
       const event = (await import(`./SocketEvents/${fileName}`)).default;
-      socket.on(event.event, (arg) => {
+      socket.on(event?.event, (arg) => {
         try {
-          event.execute(arg, rem, destinationID, username);
+          event.execute(arg, socket, rem);
         } catch (e) {
           console.error(e);
         }

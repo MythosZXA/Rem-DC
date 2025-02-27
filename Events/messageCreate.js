@@ -7,7 +7,15 @@ export default {
   execute(message, rem) {
     const consoleChannel = rem.serverChannels.get('console');
     console.log(`${message.author.username}: ${message.content}`);
-    if (message.author.bot) return;		// rem sent a message, exit
+    // rem sent a message
+    if (message.author.id === message.client.user.id) {
+      // determine destination name
+      const destinationName = message.channel.isDMBased() ? message.channel.recipient.displayName : message.channel.name;
+      if (destinationName !== 'console') {
+        consoleChannel.send(`[To ${destinationName}] ${message.content}`);
+      }
+      return;
+    }
 
     const destinationID = message.inGuild() ? message.channel.id : message.author.id;
     rem.io.to(destinationID).emit('dcMsg', {
@@ -17,7 +25,7 @@ export default {
 
     // dms to Rem
     if (!message.inGuild()) {
-      consoleChannel.send(`${message.author.username.toUpperCase()}: ${message.content}`);
+      consoleChannel.send(`[From ${message.author.username.toUpperCase()}] ${message.content}`);
     }
 
     // misc responses

@@ -1,11 +1,24 @@
 import { SlashCommandBuilder } from "discord.js";
 
 function set(interaction) {
+  // get input values
   const resolver = interaction.options;
   const hour = resolver.get('hour').value;
   const minute = resolver.get('minute').value;
   const message = resolver.get('message')?.value;
-  
+  const dateNotif = new Date();
+  dateNotif.setHours(hour, minute, 0);
+  // set notification timer if it is later today
+  const now = new Date();
+  if (dateNotif.getTime() > now.getTime()) {
+    setTimeout(() => {
+      interaction.user.send(`${message ?? 'Reminder'}`);
+    }, dateNotif.getTime() - now.getTime());
+    interaction.reply({
+      content: 'Notification Set',
+      ephemeral: true
+    });
+  }
 }
 
 function remove(interaction) {
@@ -37,7 +50,7 @@ export default {
   set,
   remove,
   execute(interaction, rem) {
-    const subcommandName = interaction.options._subcommand;
+    const subcommandName = interaction.options.getSubcommand();
     this[subcommandName]?.(interaction, rem);
   }
 };

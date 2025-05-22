@@ -1,5 +1,4 @@
 import { Events } from 'discord.js';
-// import paliaFunctions from '../Functions/palia.js';
 import { importDBToMemory } from '../sequelize.js';
 import { getServerChannels } from '../channels.js';
 import { checkBirthday } from '../Functions/specialDaysFunctions.js';
@@ -20,9 +19,6 @@ export default {
     // check for special days when tomorrow comes
     // specialDaysFunctions.checkHoliday(channels);
     checkBirthday(server, rem);
-
-    // palia
-    // paliaFunctions.setupResetTimer(rem);
 
     // server
     setupAPI(rem);

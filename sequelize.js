@@ -52,11 +52,9 @@ export async function importDBToMemory() {
 }
 
 // export all the memory data into DB
-import PaliaGiftsModule from './Models/palia_gifts.js';
 import TimersModule from './Models/timers.js';
 import TransactionsModule from './Models/transactions.js';
 import UsersModule from './Models/users.js';
-export const PaliaGifts = PaliaGiftsModule(sequelize);
 export const Timers = TimersModule(sequelize);
 export const Transactions = TransactionsModule(sequelize);
 export const Users = UsersModule(sequelize);
@@ -68,7 +66,6 @@ export async function exportMemoryToDB(rem) {
   });
 
   try {
-    await PaliaGifts.bulkCreate(rem.remDB.get('palia_gifts'), { updateOnDuplicate: ['gifted', 'gift1', 'gift2', 'gift3', 'gift4'] });
     await Timers.bulkCreate(rem.remDB.get('timers'), { updateOnDuplicate: ['expiration_time', 'message', 'user_id'] });
     await Transactions.bulkCreate(rem.remDB.get('transactions'), { updateOnDuplicate: ['date', 'payer', 'payer', 'description'] });
     await Users.bulkCreate(users, { updateOnDuplicate: ['username', 'birthday'] });

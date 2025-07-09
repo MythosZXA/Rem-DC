@@ -12,6 +12,7 @@ export default {
     const server = await rem.guilds.fetch(process.env.guildId);
     rem.remDB = await importDBToMemory();
     rem.serverChannels = await getServerChannels(server);
+    rem.schedules = new Map();
 
     // caches users for easier access
     server.members.fetch();
